@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 
+import com.eat.L;
 import com.eat.R;
 
 
@@ -22,7 +23,7 @@ public class LooperActivity extends Activity {
             Looper.prepare();
             mHandler = new Handler() {
                 public void handleMessage(Message msg) {
-                    if(msg.what == 0) {
+                    if (msg.what == 0) {
                         doLongRunningOperation();
                     }
                 }
@@ -32,6 +33,7 @@ public class LooperActivity extends Activity {
 
         private void doLongRunningOperation() {
             // Add long running operation here.
+            L.d(getClass());
         }
     }
 

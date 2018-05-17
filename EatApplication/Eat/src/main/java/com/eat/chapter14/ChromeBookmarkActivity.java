@@ -13,13 +13,22 @@ import android.widget.SimpleCursorAdapter;
 
 import com.eat.R;
 
+/**
+ * https://stackoverflow.com/questions/33996683/android-browser-bookmarkcolumns-cannot-be-resolved-in-zxing-library
+ * Most things related to Bookmarks were removed in API Level 23 (Android 6.0).
+ * You have your compileSdkVersion (a.k.a., build target in Eclipse) set to API Level 23.
+ * You can drop your compileSdkVersion to something lower to get past this error,
+ * but the code itself will not work on Android 6.0+.
+ */
+
+
 public class ChromeBookmarkActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // Definition of bookmark access information.
     public interface ChromeBookmark {
-        final static int ID = 1;
-        final static Uri URI= Uri.parse("content://com.android.chrome.browser/bookmarks");
-        final static String[] PROJECTION = {
+        int ID = 1;
+        Uri URI= Uri.parse("content://com.android.chrome.browser/bookmarks");
+        String[] PROJECTION = {
                 Browser.BookmarkColumns._ID,
                 Browser.BookmarkColumns.TITLE,
                 Browser.BookmarkColumns.URL

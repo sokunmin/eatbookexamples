@@ -54,7 +54,7 @@ public class HandlerExampleActivity extends Activity {
     private final Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
 
-            switch(msg.what) {
+            switch (msg.what) {
                 case SHOW_PROGRESS_BAR:
                     mProgressBar.setVisibility(View.VISIBLE);
                     break;
