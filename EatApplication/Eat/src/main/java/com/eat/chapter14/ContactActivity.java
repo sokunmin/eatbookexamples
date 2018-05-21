@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.widget.SimpleCursorAdapter;
 
+import com.eat.L;
+
 public class ContactActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int CONTACT_NAME_LOADER_ID = 0;
@@ -23,11 +25,13 @@ public class ContactActivity extends ListActivity implements LoaderManager.Loade
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         initAdapter();
         getLoaderManager().initLoader(CONTACT_NAME_LOADER_ID, null, this);
     }
 
     private void initAdapter() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_1, null,
                 new String[] { ContactsContract.Contacts.DISPLAY_NAME },
@@ -44,11 +48,13 @@ public class ContactActivity extends ListActivity implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mAdapter.swapCursor(c);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mAdapter.swapCursor(null);
     }
 }

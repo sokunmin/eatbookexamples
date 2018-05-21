@@ -10,6 +10,8 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.eat.L;
+
 
 public class WorkerThreadService extends Service {
 
@@ -20,21 +22,23 @@ public class WorkerThreadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mWorkerThread = new WorkerThread();
         mWorkerThread.start();
     }
 
     // Worker thread has prepared a looper and handler.
     private void onWorkerPrepared() {
-        Log.d(TAG, "onWorkerPrepared");
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mWorkerMessenger = new Messenger(mWorkerThread.mWorkerHandler);
         synchronized(this) {
             notifyAll();
         }
     }
 
+    @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind");
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         synchronized (this) {
             while (mWorkerMessenger == null) {
                 try {
@@ -50,6 +54,7 @@ public class WorkerThreadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mWorkerThread.quit();
     }
 
@@ -59,20 +64,22 @@ public class WorkerThreadService extends Service {
 
         @Override
         public void run() {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             Looper.prepare();
             mWorkerHandler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
+                    L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                     switch (msg.what) {
                         case 1:
                             try {
                                 msg.replyTo.send(Message.obtain(null, msg.what, 0, 0));
                             } catch (RemoteException e) {
-                                Log.e(TAG, e.getMessage());
+                                L.e(TAG, e.getMessage());
                             }
                             break;
                         case 2:
-                            Log.d(TAG, "Message received");
+                            L.d(getClass(), "Message received");
                             break;
                     }
 
@@ -83,6 +90,7 @@ public class WorkerThreadService extends Service {
         }
 
         public void quit() {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             mWorkerHandler.getLooper().quit();
         }
     }

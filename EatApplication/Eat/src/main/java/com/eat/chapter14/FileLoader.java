@@ -3,7 +3,8 @@ package com.eat.chapter14;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.os.FileObserver;
-import android.util.Log;
+
+import com.eat.L;
 
 import java.io.File;
 import java.util.Arrays;
@@ -27,12 +28,14 @@ public class FileLoader extends AsyncTaskLoader<List<String>> {
     private class SdCardObserver extends FileObserver {
 
         public SdCardObserver(String path) {
-            super(path, FileObserver.CREATE|FileObserver.DELETE);
+            super(path, FileObserver.CREATE | FileObserver.DELETE);
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         }
 
         @Override
         public void onEvent(int event, String path) {
-            // Report that a content change has occurred.
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
+// Report that a content change has occurred.
             // This call will force a new asynchronous data load if the loader is started
             // otherwise it will keep a reference that the data has changed for future loads.
             onContentChanged();
@@ -43,10 +46,10 @@ public class FileLoader extends AsyncTaskLoader<List<String>> {
 
     public FileLoader(Context context) {
         super(context);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         String path = context.getFilesDir().getPath();
         mSdCardObserver = new SdCardObserver(path);
     }
-
 
 
     /**
@@ -55,6 +58,7 @@ public class FileLoader extends AsyncTaskLoader<List<String>> {
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mSdCardObserver.startWatching();
 
         if (mFileNames != null) {
@@ -71,12 +75,14 @@ public class FileLoader extends AsyncTaskLoader<List<String>> {
 
     @Override
     public List<String> loadInBackground() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         File directory = getContext().getFilesDir();
         return Arrays.asList(directory.list());
     }
 
     @Override
     public void deliverResult(List<String> data) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         if (isReset()) {
             return;
         }
@@ -93,17 +99,20 @@ public class FileLoader extends AsyncTaskLoader<List<String>> {
     @Override
     protected void onStopLoading() {
         super.onStopLoading();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         cancelLoad();
     }
 
     @Override
     protected void onReset() {
         super.onReset();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mSdCardObserver.stopWatching();
         clearResources();
     }
 
     private void clearResources() {
-       mFileNames = null;
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
+        mFileNames = null;
     }
 }

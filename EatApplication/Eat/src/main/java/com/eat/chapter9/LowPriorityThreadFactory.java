@@ -13,11 +13,9 @@ class LowPriorityThreadFactory implements ThreadFactory {
         Thread t = new Thread(r);
         t.setName("LowPrio " + count++);
         t.setPriority(4);
-        t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
-        {
+        t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
-            public void uncaughtException(Thread t, Throwable e)
-            {
+            public void uncaughtException(Thread t, Throwable e) {
                 Log.d(TAG, "Thread = " + t.getName() + ", error = " + e.getMessage());
             }
         });

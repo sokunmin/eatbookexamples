@@ -1,8 +1,12 @@
 package com.eat.chapter12;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import android.app.IntentService;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.ResultReceiver;
+
+import com.eat.L;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,11 +19,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.ResultReceiver;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class WebService extends IntentService {
     private static final String TAG = WebService.class.getName();
@@ -37,24 +39,27 @@ public class WebService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
 
         Uri uri = intent.getData();
         int requestType = intent.getIntExtra(INTENT_KEY_REQUEST_TYPE, 0);
-        String json = (String)intent.getSerializableExtra(INTENT_KEY_JSON);
+        String json = (String) intent.getSerializableExtra(INTENT_KEY_JSON);
         ResultReceiver receiver = intent.getParcelableExtra(INTENT_KEY_RECEIVER);
 
         try {
             HttpRequestBase request = null;
             switch (requestType) {
                 case GET: {
+                    L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                     request = new HttpGet();
                     // Request setup omitted
                     break;
                 }
                 case POST: {
+                    L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                     request = new HttpPost();
                     if (json != null) {
-                        ((HttpPost)request).setEntity(new StringEntity(json));
+                        ((HttpPost) request).setEntity(new StringEntity(json));
                     }
                     // Request setup omitted
                     break;
@@ -72,17 +77,14 @@ public class WebService extends IntentService {
                     Bundle resultBundle = new Bundle();
                     resultBundle.putString(BUNDLE_KEY_REQUEST_RESULT, EntityUtils.toString(httpEntity));
                     receiver.send(statusCode, resultBundle);
-                }
-                else {
+                } else {
                     receiver.send(statusCode, null);
                 }
-            }
-            else {
+            } else {
                 receiver.send(0, null);
 
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             receiver.send(0, null);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -90,10 +92,9 @@ public class WebService extends IntentService {
     }
 
     private HttpResponse doRequest(HttpRequestBase request) throws IOException {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         HttpClient client = new DefaultHttpClient();
-
         // HttpClient configuration omitted
-
         return client.execute(request);
     }
 }

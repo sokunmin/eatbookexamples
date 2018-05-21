@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.view.View;
 
+import com.eat.L;
 import com.eat.R;
 
 public class WebServiceActivity extends Activity {
@@ -19,18 +20,19 @@ public class WebServiceActivity extends Activity {
     private ResultReceiver mReceiver;
 
     public WebServiceActivity() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mReceiver = new ResultReceiver(new Handler()) {
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData) {
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                 int httpStatus = resultCode;
                 String jsonResult = null;
                 if (httpStatus == 200) { // OK
                     if (resultData != null) {
-                        jsonResult= resultData.getString(WebService.BUNDLE_KEY_REQUEST_RESULT);
+                        jsonResult = resultData.getString(WebService.BUNDLE_KEY_REQUEST_RESULT);
                         // Omitted: Handle response
                     }
-                }
-                else {
+                } else {
                     // Handle error
                 }
             }
@@ -42,9 +44,11 @@ public class WebServiceActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_service);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
     public void doPost(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         Intent intent = new Intent(this, WebService.class);
         intent.setData(Uri.parse(postUrl));
         intent.putExtra(WebService.INTENT_KEY_REQUEST_TYPE, WebService.POST);
@@ -54,6 +58,7 @@ public class WebServiceActivity extends Activity {
     }
 
     public void doGet(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         Intent intent = new Intent(this, WebService.class);
         intent.setData(Uri.parse(getUrl));
         intent.putExtra(WebService.INTENT_KEY_REQUEST_TYPE, WebService.GET);

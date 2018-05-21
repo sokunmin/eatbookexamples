@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.widget.TextView;
 
+import com.eat.L;
 import com.eat.R;
 
 
@@ -31,15 +32,17 @@ public class AlarmBroadcastActivity extends Activity {
         registerReceiver(alarmReceiver, new IntentFilter("com.eat.alarmreceiver"));
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, new Intent("com.eat.alarmreceiver"), PendingIntent.FLAG_UPDATE_CURRENT);
-        am = (AlarmManager)(this.getSystemService( Context.ALARM_SERVICE ));
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()
-         + ONE_HOUR, ONE_HOUR, pendingIntent);
+        am = (AlarmManager) (this.getSystemService(Context.ALARM_SERVICE));
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + ONE_HOUR, ONE_HOUR, pendingIntent);
         tvStatus.setText("Alarm is set");
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(alarmReceiver);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 }

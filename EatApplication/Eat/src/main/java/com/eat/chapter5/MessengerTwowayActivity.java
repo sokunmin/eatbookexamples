@@ -14,6 +14,7 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 
+import com.eat.L;
 import com.eat.R;
 
 
@@ -28,11 +29,13 @@ public class MessengerTwowayActivity extends Activity {
     private ServiceConnection mRemoteConnection = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder service) {
+            L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             mRemoteService = new Messenger(service);
             mBound = true;
         }
 
         public void onServiceDisconnected(ComponentName className) {
+            L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             mRemoteService = null;
             mBound = false;
         }
@@ -45,6 +48,7 @@ public class MessengerTwowayActivity extends Activity {
 
     public void onBindClick(View v) {
         Intent intent = new Intent("com.eat.chapter5.ACTION_BIND");
+        intent.setPackage(getPackageName());
         bindService(intent, mRemoteConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -53,7 +57,6 @@ public class MessengerTwowayActivity extends Activity {
             unbindService(mRemoteConnection);
             mBound = false;
         }
-
     }
 
     public void onSendClick(View v) {

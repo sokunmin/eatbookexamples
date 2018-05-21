@@ -20,10 +20,13 @@ public class LooperActivity extends Activity {
         public Handler mHandler;
 
         public void run() {
+
+            L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
+
             Looper.prepare();
             mHandler = new Handler() {
                 public void handleMessage(Message msg) {
-                    if (msg.what == 0) {
+                    if (msg.what == 1) {
                         doLongRunningOperation();
                     }
                 }
@@ -33,20 +36,21 @@ public class LooperActivity extends Activity {
 
         private void doLongRunningOperation() {
             // Add long running operation here.
-            L.d(getClass());
+            L.i(getClass(), "Handler / ThreadId: %d", Thread.currentThread().getId());
         }
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_looper);
+
         mLooperThread = new LooperThread();
         mLooperThread.start();
     }
 
     public void onClick(View v) {
         if (mLooperThread.mHandler != null) {
-            Message msg = mLooperThread.mHandler.obtainMessage(0);
+            Message msg = mLooperThread.mHandler.obtainMessage(1);
             mLooperThread.mHandler.sendMessage(msg);
         }
     }

@@ -8,6 +8,8 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.eat.L;
+
 import java.util.concurrent.Executor;
 
 
@@ -32,6 +34,7 @@ public class BoundLocalService2 extends Service {
 
     public class ServiceBinder extends Binder {
         public BoundLocalService2 getService() {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             return BoundLocalService2.this;
         }
     }
@@ -45,6 +48,7 @@ public class BoundLocalService2 extends Service {
         executor.execute(new Runnable() {
             @Override
             public void run() {
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                 int result = longOperation();
                 listener.onOperationDone(result);
             }
@@ -53,12 +57,14 @@ public class BoundLocalService2 extends Service {
 
     private int longOperation() {
         SystemClock.sleep(10000);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         return 42;
     }
 
     public class TaskExecutor implements Executor {
         @Override
         public void execute(Runnable runnable) {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             new Thread(runnable).start();
         }
     }

@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 
+import com.eat.L;
 import com.eat.R;
 
 
@@ -19,6 +20,7 @@ public class NetworkCheckerIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (isNewNetworkDataAvailable()) {
             addStatusBarNotification();
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         }
     }
 
@@ -28,14 +30,12 @@ public class NetworkCheckerIntentService extends IntentService {
     }
 
     private void addStatusBarNotification() {
-        Notification.Builder mBuilder =
-                new Notification.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("New network data")
-                        .setContentText("New data can be downloaded.");
+        Notification.Builder mBuilder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("New network data")
+                .setContentText("New data can be downloaded.");
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
     }
 

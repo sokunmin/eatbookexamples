@@ -1,5 +1,6 @@
 package com.eat.chapter4;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.eat.L;
 import com.eat.R;
 
 import java.util.Random;
@@ -51,9 +53,11 @@ public class HandlerExampleActivity extends Activity {
         mBackgroundThread.exit();
     }
 
+    @SuppressLint("HandlerLeak")
     private final Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
 
+            L.d(getClass(), "Handler / ThreadId: %d", Thread.currentThread().getId());
             switch (msg.what) {
                 case SHOW_PROGRESS_BAR:
                     mProgressBar.setVisibility(View.VISIBLE);
@@ -71,25 +75,28 @@ public class HandlerExampleActivity extends Activity {
         private Handler mBackgroundHandler;
 
         public void run() {
+            L.d(getClass(), "BackgroundThread / ThreadId: %d", Thread.currentThread().getId());
             Looper.prepare();
             mBackgroundHandler = new Handler();
             Looper.loop();
         }
 
         public void doWork() {
+            L.d(getClass(), "BackgroundThread / ThreadId: %d", Thread.currentThread().getId());
+
             mBackgroundHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Message uiMsg = mUiHandler.obtainMessage(SHOW_PROGRESS_BAR, 0,
-                            0, null);
+                    L.d(getClass(), "BackgroundThread / post(Runnable) / ThreadId: %d", Thread.currentThread().getId());
+
+                    Message uiMsg = mUiHandler.obtainMessage(SHOW_PROGRESS_BAR, 0, 0, null);
                     mUiHandler.sendMessage(uiMsg);
 
                     Random r = new Random();
                     int randomInt = r.nextInt(5000);
                     SystemClock.sleep(randomInt);
 
-                    uiMsg = mUiHandler.obtainMessage(HIDE_PROGRESS_BAR, randomInt,
-                            0, null);
+                    uiMsg = mUiHandler.obtainMessage(HIDE_PROGRESS_BAR, randomInt, 0, null);
                     mUiHandler.sendMessage(uiMsg);
                 }
             });

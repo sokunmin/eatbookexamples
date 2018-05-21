@@ -443,14 +443,14 @@ public class L {
     private static String concatTag(String tag, StringBuilder lineNumber, StringBuilder method) {
         StringBuilder log = new StringBuilder();
         if (tag == null || tag.equals("")) {
-            log.append("[(").append(lineNumber).append(")")
-                    .append(method)
-                    .append("] => \t");
+            log.append("[")
+                    .append(method).append(":").append(lineNumber)
+                    .append("]) => \t");
         } else {
-            log.append("[(").append(lineNumber).append(")")
+            log.append("[")
                     .append(tag)
                     .append(" / ")
-                    .append(method)
+                    .append(method).append(":").append(lineNumber)
                     .append("] => \t");
         }
 

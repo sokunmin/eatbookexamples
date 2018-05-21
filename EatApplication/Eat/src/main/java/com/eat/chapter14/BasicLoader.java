@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.eat.L;
+
 import java.util.Random;
 
 public class BasicLoader extends AsyncTaskLoader<Integer>{
@@ -17,7 +19,7 @@ public class BasicLoader extends AsyncTaskLoader<Integer>{
 
     @Override
     protected boolean onCancelLoad() {
-        Log.d(TAG, "onCancelLoad");
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         return super.onCancelLoad();
     }
 
@@ -25,14 +27,17 @@ public class BasicLoader extends AsyncTaskLoader<Integer>{
     protected void onStartLoading() {
         super.onStartLoading();
         forceLoad();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
     @Override
     public Integer loadInBackground() {
-       return loadData();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
+        return loadData();
     }
 
     private int loadData() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         SystemClock.sleep(3000);
         Random rand = new Random();
         int data = rand.nextInt(50);

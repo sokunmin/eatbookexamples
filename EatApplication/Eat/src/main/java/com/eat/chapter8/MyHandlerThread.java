@@ -3,6 +3,8 @@ package com.eat.chapter8;
 import android.os.*;
 import android.os.Process;
 
+import com.eat.L;
+
 public class MyHandlerThread extends HandlerThread {
 
     private Handler mHandler;
@@ -17,6 +19,7 @@ public class MyHandlerThread extends HandlerThread {
         mHandler = new Handler(getLooper()) {
             @Override
             public void handleMessage(Message msg) {
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                 switch(msg.what) {
                     case 1:
                         // Handle message

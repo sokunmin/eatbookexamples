@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.eat.L;
 import com.eat.R;
 
 import java.util.ArrayList;
@@ -29,44 +30,50 @@ public class InvokeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoke);
         textStatus = (TextView) findViewById(R.id.text_status);
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
 
     public void onButtonClick(View v) {
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
 
         SimpleExecutor simpleExecutor = new SimpleExecutor();
         simpleExecutor.execute(new Runnable() {
             @Override
             public void run() {
+                L.d("SimpleExecutor / ThreadId: %d --- begin", Thread.currentThread().getId());
                 List<Callable<String>> tasks = new ArrayList<Callable<String>>();
                 tasks.add(new Callable<String>() {
                     @Override
                     public String call() throws Exception {
+                        L.d(getClass(), "[Task 1] ThreadId: %d", Thread.currentThread().getId());
                         return getFirstPartialDataFromNetwork();
                     }
                 });
                 tasks.add(new Callable<String>() {
                     @Override
                     public String call() throws Exception {
+                        L.d(getClass(), "[Task 2] ThreadId: %d", Thread.currentThread().getId());
                         return getSecondPartialDataFromNetwork();
                     }
                 });
 
                 ThreadPoolExecutor executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(2);
                 try {
-                    Log.d(TAG, "invokeAll");
+                    L.w(getClass(), "ThreadId: %d, before invokeAll", Thread.currentThread().getId());
                     List<Future<String>> futures = executor.invokeAll(tasks);
-                    Log.d(TAG, "invokeAll after");
+                    L.w(getClass(), "ThreadId: %d, after invokeAll", Thread.currentThread().getId());
 
                     final String mashedData = mashupResult(futures);
 
                     textStatus.post(new Runnable() {
                         @Override
                         public void run() {
+                            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                             textStatus.setText(mashedData);
                         }
                     });
-                    Log.d(TAG, "mashedData = " + mashedData);
+                    L.w(getClass(), "mashedData = %s", mashedData);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -75,22 +82,23 @@ public class InvokeActivity extends Activity {
                 }
 
                 executor.shutdown();
+                L.d("SimpleExecutor / ThreadId: %d --- end", Thread.currentThread().getId());
             }
         });
     }
 
     private String getFirstPartialDataFromNetwork() {
-        Log.d(TAG, "ProgressReportingTask 1 started");
+        L.e(getClass(), "ThreadId: %d, task 1 started", Thread.currentThread().getId());
         SystemClock.sleep(10000);
-        Log.d(TAG, "ProgressReportingTask 1 done");
-        return "MockA";
+        L.e(getClass(), "ThreadId: %d, task 1 done", Thread.currentThread().getId());
+        return "MockA ";
     }
 
     private String getSecondPartialDataFromNetwork() {
-        Log.d(TAG, "ProgressReportingTask 2 started");
+        L.e(getClass(), "ThreadId: %d, task 2 started", Thread.currentThread().getId());
         SystemClock.sleep(2000);
-        Log.d(TAG, "ProgressReportingTask 2 done");
-        return "MockB";
+        L.e(getClass(), "ThreadId: %d, task 2 done", Thread.currentThread().getId());
+        return "MockB ";
     }
 
     private String mashupResult(List<Future<String>> futures) throws ExecutionException, InterruptedException {
@@ -98,6 +106,7 @@ public class InvokeActivity extends Activity {
         for (Future<String> future : futures) {
             builder.append(future.get());
         }
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         return builder.toString();
     }
 }

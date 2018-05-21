@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.eat.L;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,12 +26,14 @@ public class DownloadService extends Service {
     public void onCreate() {
         super.onCreate();
         mDownloadExecutor = Executors.newFixedThreadPool(4);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mDownloadExecutor.shutdownNow();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
     @Override
@@ -40,10 +44,12 @@ public class DownloadService extends Service {
         if (intent != null) {
             downloadFile(intent.getData());
         }
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         return START_REDELIVER_INTENT;
     }
 
     private void downloadFile(final Uri uri) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mDownloadExecutor.submit(new Runnable() {
             @Override
             public void run() {
@@ -54,6 +60,7 @@ public class DownloadService extends Service {
                 synchronized (this) {
                     if (--mCommandCount <= 0) {
                         stopSelf();
+                        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                     }
                 }
             }

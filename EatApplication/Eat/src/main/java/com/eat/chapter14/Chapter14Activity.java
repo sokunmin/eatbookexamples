@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.eat.L;
 import com.eat.R;
 import com.eat.chapter13.ExpandableContactListActivity;
 
@@ -17,18 +18,22 @@ public class Chapter14Activity extends Activity {
     }
 
     public void onBasicActivity(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         startActivity(new Intent(this, BasicActivity.class));
     }
 
     public void onChromeBookmarkActivity(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         startActivity(new Intent(this, ChromeBookmarkActivity.class));
     }
 
     public void onContactActivity(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         startActivity(new Intent(this, ContactActivity.class));
     }
 
     public void onFileActivity(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         startActivity(new Intent(this, FileActivity.class));
     }
 }

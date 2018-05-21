@@ -4,23 +4,25 @@ import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
+
+import com.eat.L;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<List<String>>{
+        LoaderManager.LoaderCallbacks<List<String>> {
 
     private static final int FILE_LOADER_ID = 1;
 
     private ArrayAdapter<String> mFileAdapter;
-    private List<String> mFileNames = new ArrayList<String>();
+    private List<String> mFileNames = new ArrayList<>();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         getLoaderManager().initLoader(FILE_LOADER_ID, null, this);
         setEmptyText("No files in directory");
         setListShown(false);
@@ -39,6 +41,7 @@ public class FileListFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<List<String>> fileLoader,
                                List<String> fileNames) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mFileAdapter.clear();
         mFileAdapter.addAll(fileNames);
         setListShown(true);
@@ -46,6 +49,7 @@ public class FileListFragment extends ListFragment implements
 
     @Override
     public void onLoaderReset(Loader<List<String>> fileLoader) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mFileNames = null;
         mFileAdapter.clear();
     }

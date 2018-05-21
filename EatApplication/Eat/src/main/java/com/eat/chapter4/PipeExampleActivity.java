@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.eat.L;
 import com.eat.R;
 
 import java.io.IOException;
@@ -19,19 +20,19 @@ public class PipeExampleActivity extends Activity {
     private static final String TAG = "PipeExampleActivity";
     private EditText editText;
 
-    PipedReader r;
-    PipedWriter w;
+    PipedReader pipedReader;
+    PipedWriter pipedWriter;
 
     private Thread workerThread;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        r = new PipedReader();
-        w = new PipedWriter();
+        pipedReader = new PipedReader();
+        pipedWriter = new PipedWriter();
 
         try {
-            w.connect(r);
+            pipedWriter.connect(pipedReader);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,15 +42,17 @@ public class PipeExampleActivity extends Activity {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                 try {
                     // Only handle addition of characters
                     if (count > before) {
                         // Write the last entered character to the pipe
-                        w.write(charSequence.subSequence(before, count).toString());
+                        pipedWriter.write(charSequence.subSequence(before, count).toString());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -58,10 +61,11 @@ public class PipeExampleActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             }
         });
 
-        workerThread = new Thread(new TextHandlerTask(r));
+        workerThread = new Thread(new TextHandlerTask(pipedReader));
         workerThread.start();
     }
 
@@ -70,8 +74,8 @@ public class PipeExampleActivity extends Activity {
         super.onDestroy();
         workerThread.interrupt();
         try {
-            r.close();
-            w.close();
+            pipedReader.close();
+            pipedWriter.close();
         } catch (IOException e) {
         }
     }
@@ -85,13 +89,17 @@ public class PipeExampleActivity extends Activity {
 
         @Override
         public void run() {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             while (!Thread.currentThread().isInterrupted()) {
+                L.d(getClass(), "[1] ThreadId: %d", Thread.currentThread().getId());
+
                 try {
                     int i;
                     while ((i = reader.read()) != -1) {
                         char c = (char) i;
                         //ADD TEXT PROCESSING LOGIC HERE
                         Log.d(TAG, "char = " + c);
+                        L.d(getClass(), "[2] ThreadId: %d", Thread.currentThread().getId());
                     }
 
                 } catch (IOException e) {

@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.TextView;
 
+import com.eat.L;
 import com.eat.R;
 
 
@@ -15,28 +16,32 @@ public class ThreadRetainActivity extends Activity {
         private ThreadRetainActivity mActivity;
 
         public MyThread(ThreadRetainActivity activity) {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             mActivity = activity;
         }
 
         private void attach(ThreadRetainActivity activity) {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             mActivity = activity;
         }
 
         @Override
         public void run() {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             final String text = getTextFromNetwork();
             mActivity.setText(text);
         }
 
         // Long operation
         private String getTextFromNetwork() {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             // Simulate network operation
             SystemClock.sleep(5000);
             return "Text from network";
         }
     }
 
-    private static MyThread t;
+    private static MyThread myThread;
     private TextView textView;
 
     @Override
@@ -46,29 +51,34 @@ public class ThreadRetainActivity extends Activity {
         textView = (TextView) findViewById(R.id.text_retain);
         Object retainedObject = getLastNonConfigurationInstance();
         if (retainedObject != null) {
-            t = (MyThread) retainedObject;
-            t.attach(this);
+            myThread = (MyThread) retainedObject;
+            myThread.attach(this);
         }
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
-    @Override
 
+
+    @Override
     public Object onRetainNonConfigurationInstance() {
-        if (t != null && t.isAlive()) {
-            return t;
+        if (myThread != null && myThread.isAlive()) {
+            return myThread;
         }
         return null;
     }
 
     public void onStartThread(View v) {
-        t = new MyThread(this);
-        t.start();
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
+        myThread = new MyThread(this);
+        myThread.start();
     }
 
     private void setText(final String text) {
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                 textView.setText(text);
             }
         });

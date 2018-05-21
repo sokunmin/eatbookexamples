@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.eat.L;
 import com.eat.R;
 
 
@@ -21,12 +22,14 @@ public class DownloadActivity extends Activity {
     }
 
     public void onStartDownload(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         Intent intent = new Intent("com.eat.ACTION_DOWNLOAD");
         intent.setData(Uri.parse(DOWNLOAD_URL));
         startService(intent);
     }
 
     public void onStopService(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         Intent intent = new Intent(this, DownloadService.class);
         stopService(intent);
     }

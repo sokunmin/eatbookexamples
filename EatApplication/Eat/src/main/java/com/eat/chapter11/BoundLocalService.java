@@ -6,6 +6,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.eat.L;
+
 
 public class BoundLocalService extends Service {
 
@@ -17,6 +19,7 @@ public class BoundLocalService extends Service {
 
     public class ServiceBinder extends Binder {
         public BoundLocalService getService() {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             return BoundLocalService.this;
         }
     }

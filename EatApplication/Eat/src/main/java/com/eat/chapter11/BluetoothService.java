@@ -9,6 +9,8 @@ import android.content.res.Configuration;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.eat.L;
+
 import java.io.IOException;
 import java.util.UUID;
 
@@ -37,6 +39,7 @@ public class BluetoothService extends Service {
     public void onCreate() {
         super.onCreate();
         mAdapter = BluetoothAdapter.getDefaultAdapter();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
     @Override
@@ -44,12 +47,14 @@ public class BluetoothService extends Service {
         if (mAdapter != null) {
             if (intent.getStringExtra(COMMAND_KEY).equals(COMMAND_START_LISTENING) && mListening == false) {
                 startListening();
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             }
         }
         return START_REDELIVER_INTENT;
     }
 
     private void startListening() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mListening = true;
         listeningThread = new Thread(new Runnable() {
 
@@ -73,6 +78,7 @@ public class BluetoothService extends Service {
     }
 
     private void stopListening() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mListening = false;
         try {
             if (mServerSocket != null) {
@@ -87,5 +93,6 @@ public class BluetoothService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopListening();
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 }

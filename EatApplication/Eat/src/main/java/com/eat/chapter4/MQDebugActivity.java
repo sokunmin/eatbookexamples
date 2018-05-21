@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.LogPrinter;
 import android.view.View;
 
+import com.eat.L;
 import com.eat.R;
 
 
@@ -24,11 +25,13 @@ public class MQDebugActivity extends Activity {
         Thread t = new Thread() {
             @Override
             public void run() {
+                L.d(getClass(), "[1] Thread / ThreadId: %d", Thread.currentThread().getId());
+
                 Looper.prepare();
                 mWorkerHandler = new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
-                        Log.d(TAG, "handleMessage - what = " + msg.what);
+                        L.d(getClass(), "[2] Thread / Handler (%d)/ handleMessage - what = %d", Thread.currentThread().getId(), msg.what);
                     }
                 };
                 Looper.loop();

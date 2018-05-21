@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.eat.L;
 import com.eat.R;
 
 import java.lang.ref.WeakReference;
@@ -29,6 +30,7 @@ public class BoundLocalActivity2 extends Activity {
 
         public ServiceListener(BoundLocalActivity2 activity) {
             this.mWeakActivity = new WeakReference<BoundLocalActivity2>(activity);
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         }
 
         @Override
@@ -38,7 +40,8 @@ public class BoundLocalActivity2 extends Activity {
                 localReferenceActivity.runOnUiThread(new Runnable(){
                     @Override
                     public void run() {
-                         localReferenceActivity.tvStatus.setText(Integer.toString(someResult));
+                        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
+                        localReferenceActivity.tvStatus.setText(Integer.toString(someResult));
                     }
                 });
             }
@@ -52,6 +55,7 @@ public class BoundLocalActivity2 extends Activity {
 
         bindService(new Intent(BoundLocalActivity2.this, BoundLocalService2.class), mLocalServiceConnection, Service.BIND_AUTO_CREATE);
         mIsBound = true;
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
     }
 
     @Override
@@ -61,6 +65,7 @@ public class BoundLocalActivity2 extends Activity {
             try {
                 unbindService(mLocalServiceConnection);
                 mIsBound = false;
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             } catch (IllegalArgumentException e) {
                 // No bound service
             }
@@ -71,6 +76,7 @@ public class BoundLocalActivity2 extends Activity {
     public void onClickExecuteOnClientUIThread(View v) {
         if (mBoundLocalService != null) {
             mBoundLocalService.doLongAsyncOperation(new ServiceListener(this));
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         }
     }
 
@@ -79,11 +85,13 @@ public class BoundLocalActivity2 extends Activity {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mBoundLocalService = ((BoundLocalService2.ServiceBinder)iBinder).getService();
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mBoundLocalService = null;
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         }
     }
 }

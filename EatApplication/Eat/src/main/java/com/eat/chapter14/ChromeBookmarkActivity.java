@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.eat.L;
 import com.eat.R;
 
 /**
@@ -43,6 +44,7 @@ public class ChromeBookmarkActivity extends Activity implements LoaderManager.Lo
         }
 
         public void insert(String name, String url) {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             ContentValues cv = new ContentValues();
             cv.put(Browser.BookmarkColumns.BOOKMARK, 1);
             cv.put(Browser.BookmarkColumns.TITLE, name);
@@ -51,6 +53,7 @@ public class ChromeBookmarkActivity extends Activity implements LoaderManager.Lo
         }
 
         public void delete(String name) {
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             String where = Browser.BookmarkColumns.TITLE + "=?";
             String[] args = new String[] { name };
             startDelete(0, null, ChromeBookmark.URI, where, args);
@@ -65,6 +68,7 @@ public class ChromeBookmarkActivity extends Activity implements LoaderManager.Lo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmarks);
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mListBookmarks = (ListView) findViewById(R.id.list_bookmarks);
 
         mChromeBookmarkAsyncHandler = new ChromeBookmarkAsyncHandler(getContentResolver());
@@ -75,6 +79,7 @@ public class ChromeBookmarkActivity extends Activity implements LoaderManager.Lo
     }
 
     private void initAdapter() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_1, null,
                 new String[] { Browser.BookmarkColumns.TITLE },
@@ -94,6 +99,7 @@ public class ChromeBookmarkActivity extends Activity implements LoaderManager.Lo
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         return new CursorLoader(this, ChromeBookmark.URI,
                 ChromeBookmark.PROJECTION, null, null,
                 Browser.BookmarkColumns.TITLE + " ASC");
@@ -101,16 +107,19 @@ public class ChromeBookmarkActivity extends Activity implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mAdapter.swapCursor(newCursor);
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mAdapter.swapCursor(null);
     }
 
 
     public void onAddBookmark(View v) {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag("dialog");
         // Remove previous dialogs

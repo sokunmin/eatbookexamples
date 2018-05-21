@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.eat.L;
 import com.eat.R;
 
 import java.io.BufferedOutputStream;
@@ -24,12 +25,13 @@ public class FileActivity extends Activity {
     }
 
     public void onAddFile(View v) {
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         String filename = "testfile" + mCount++ + ".txt";
         File file = new File(this.getFilesDir(), filename);
-        OutputStream out = null;
+        OutputStream out;
         try {
             out = new BufferedOutputStream(new FileOutputStream(file));
-            out.write(new String("Test").getBytes("UTF-8"));
+            out.write("Test".getBytes("UTF-8"));
             out.close();
         } catch (Exception e){
 
@@ -39,10 +41,12 @@ public class FileActivity extends Activity {
     }
 
     public void onRemoveFiles(View v) {
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         removeAllFiles();
     }
 
     private void removeAllFiles() {
+        L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         File dir = getFilesDir();
         File[] files = dir.listFiles();
         for (File file : files) {

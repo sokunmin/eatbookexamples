@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.eat.L;
 import com.eat.R;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class FileDownloadActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
 
         setContentView(R.layout.activity_file_download);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -49,6 +51,7 @@ public class FileDownloadActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        L.e(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         mFileDownloaderTask.setActivity(null);
         mFileDownloaderTask.cancel(true);
     }
@@ -71,6 +74,7 @@ public class FileDownloadActivity extends Activity {
             super.onPreExecute();
             mActivity.mProgressBar.setVisibility(View.VISIBLE);
             mActivity.mProgressBar.setProgress(0);
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
         }
 
         @Override
@@ -79,6 +83,7 @@ public class FileDownloadActivity extends Activity {
                 if (!isCancelled()) {
                     Bitmap bitmap = downloadFile(url);
                     publishProgress(bitmap);
+                    L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
                 }
             }
             return null;
@@ -93,6 +98,7 @@ public class FileDownloadActivity extends Activity {
                 ImageView iv = new ImageView(mActivity);
                 iv.setImageBitmap(bitmaps[0]);
                 mActivity.mLayoutImages.addView(iv);
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             }
         }
 
@@ -101,6 +107,7 @@ public class FileDownloadActivity extends Activity {
             super.onPostExecute(aVoid);
             if (mActivity != null) {
                 mActivity.mProgressBar.setVisibility(View.GONE);
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             }
         }
 
@@ -109,6 +116,7 @@ public class FileDownloadActivity extends Activity {
             super.onCancelled();
             if (mActivity != null) {
                 mActivity.mProgressBar.setVisibility(View.GONE);
+                L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             }
         }
 
@@ -116,14 +124,13 @@ public class FileDownloadActivity extends Activity {
         private Bitmap downloadFile(String url) {
             Bitmap bitmap = null;
             try {
-                bitmap = BitmapFactory
-                        .decodeStream((InputStream) new URL(url)
-                                .getContent());
+                bitmap = BitmapFactory.decodeStream((InputStream) new URL(url).getContent());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            L.d(getClass(), "ThreadId: %d", Thread.currentThread().getId());
             return bitmap;
         }
 
