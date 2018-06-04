@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.eat.chapter1.Chapter1Activity;
 import com.eat.chapter10.Chapter10Activity;
 import com.eat.chapter11.Chapter11Activity;
 import com.eat.chapter12.Chapter12Activity;
@@ -26,7 +27,7 @@ public class StartActivity extends Activity {
     }
 
     public void onChapter1(View v) {
-        // Empty, no examples in this chapter.
+        startActivity(new Intent(this, Chapter1Activity.class));
     }
 
     public void onChapter2(View v) {

@@ -1,5 +1,6 @@
 package com.eat.chapter4;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ public class LooperActivity extends Activity {
 
         public Handler mHandler;
 
+        @SuppressLint("HandlerLeak")
         public void run() {
 
             L.i(getClass(), "ThreadId: %d", Thread.currentThread().getId());
