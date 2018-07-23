@@ -41,7 +41,7 @@ public class HandlerCallbackActivity extends Activity implements Handler.Callbac
             @Override
             public void handleMessage(Message msg) {
                 // Process message
-                L.i(getClass(), "Handler / ThreadId: %d", Thread.currentThread().getId());
+                L.i(getClass(), "[4] Handler / ThreadId: %d", Thread.currentThread().getId());
             }
         };
         handler.sendEmptyMessage(1);
